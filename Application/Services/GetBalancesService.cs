@@ -21,7 +21,7 @@ namespace Billing.Application.Services
 
             var result = new List<GetBalancesViewModel>();
 
-            var balances = balancesTemp.Where(account => account.AccountId == accountId);
+            var balances = balancesTemp.Where(account => account.AccountId == accountId).OrderBy(period => period.Period);
             var payments = paymentsTemp.Where(account => account.AccountId == accountId);
 
             decimal paymentPeriodSum=0;
@@ -34,7 +34,7 @@ namespace Billing.Application.Services
                         { 
                             Period = DateTime.ParseExact(balance.Period, "yyyyMM", CultureInfo.InvariantCulture),
                             AccountId = balance.AccountId,
-                            InBalance = balance.InBalance,
+                            InBalance = (balancesCounter !=0) ?(result[balancesCounter - 1].OutBalance):(balance.InBalance),
                             Calculate = balance.Calculation
                         });
 
