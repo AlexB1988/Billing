@@ -22,34 +22,34 @@ namespace Billing.Application.Services
                 .Where(account => account.AccountId == accountId)
                 .OrderBy(period => period.Period).OrderBy(period => period.Period);
 
+            var result = balances.GroupJoin(
+                inner: payments,
+                outerKeySelector: balance => balance.AccountId,
+                innerKeySelector: payment => payment.AccountId,
+                resultSelector: (b, p) => new GetBalancesViewModel
+                {
+                    Period = b.Period.ToString("yyyyMM"),
+                    AccountId = b.AccountId,
+                    InBalance = b.InBalance,
+                    Calculate = b.Calculation,
+                    Pay = p.Where(p => p.Date.Year == b.Period.Year
+                                && p.Date.Month == b.Period.Month)
+                           .Sum(pay => pay.Sum)
+                }).ToList();
+
+            for (int i = 0; i < result.Count(); i++)
+            {
+                if (i != 0)
+                {
+                    result[i].InBalance = result[i - 1].OutBalance;
+                }
+                result[i].OutBalance = result[i].InBalance + result[i].Calculate - result[i].Pay;
+            }
+
 
             switch (period)
             {
                 case Period.Month:
-                    var result = balances.GroupJoin(
-                    inner: payments,
-                    outerKeySelector: balance => balance.AccountId,
-                    innerKeySelector: payment => payment.AccountId,
-                    resultSelector: (b, p) => new GetBalancesViewModel
-                    {
-                        Period = b.Period,
-                        AccountId = b.AccountId,
-                        InBalance = b.InBalance,
-                        Calculate = b.Calculation,
-                        Pay = p.Where(p => p.Date.Year == b.Period.Year
-                                    && p.Date.Month == b.Period.Month)
-                               .Sum(pay => pay.Sum)
-                    }).ToList();
-
-                    for(int i = 0; i < result.Count(); i++)
-                    {
-                        if (i != 0)
-                        {
-                            result[i].InBalance = result[i - 1].OutBalance;
-                        }
-                        result[i].OutBalance = result[i].InBalance + result[i].Calculate - result[i].Pay;
-                    }
-
                     return result.OrderByDescending(period => period.Period).ToList();
 
                 case Period.Year:

@@ -2,7 +2,7 @@
 {
     public class GetBalancesViewModel
     {
-        public DateTime Period { get; set; }
+        public string Period { get; set; }
 
         public int AccountId { get; set; }
 
