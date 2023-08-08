@@ -8,7 +8,14 @@ namespace Billing.Domain.Entities
         public int AccountId { get; set; }
 
         [JsonProperty("period")]
-        public string Period { get; set; }
+        public string PeriodJson
+        {
+            get { return Period.ToString(); }
+            set { Period = DateTime.ParseExact(value.ToString(), "yyyyMM", null); }
+        }
+
+        [JsonIgnore]
+        public DateTime Period { get; set; }
 
         [JsonProperty("in_balance")]
         public decimal InBalance { get; set; }

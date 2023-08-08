@@ -1,7 +1,5 @@
 ﻿using Billing.Application.Interfaces;
 using Billing.Application.ViewModels;
-using Billing.Domain.Entities;
-using Microsoft.VisualBasic;
 using System.Globalization;
 
 namespace Billing.Application.Services
@@ -34,12 +32,12 @@ namespace Billing.Application.Services
                     innerKeySelector: payment => payment.AccountId,
                     resultSelector: (b, p) => new GetBalancesViewModel
                     {
-                        Period = DateTime.ParseExact(b.Period, "yyyyMM", CultureInfo.InvariantCulture),
+                        Period = b.Period,
                         AccountId = b.AccountId,
                         InBalance = b.InBalance,
                         Calculate = b.Calculation,
-                        Pay = p.Where(p => p.Date.Year.ToString() == b.Period.Substring(0, 4)
-                                    && p.Date.Month == int.Parse(b.Period.Substring(4)))
+                        Pay = p.Where(p => p.Date.Year == b.Period.Year
+                                    && p.Date.Month == b.Period.Month)
                                .Sum(pay => pay.Sum)
                     }).ToList();
 
