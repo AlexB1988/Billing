@@ -7,17 +7,13 @@ namespace Billing.Infrastructure
 {
     public class BalanceFormFile : IBalance
     {
-        public async Task<List<Balance>> GetBalances()
+        public async Task<ICollection<Balance>> GetBalances()
         {
-            using var file = new FileStream(@"Infrastructure\balance_202105270825.json", FileMode.Open);
+            using var file = File.OpenText(@"Infrastructure\balance_202105270825.json");
 
-            byte[] buffer = new byte[file.Length];
+            var stringJson =await file.ReadToEndAsync();
 
-            await file.ReadAsync(buffer, 0, buffer.Length);
-
-            string stringJson = Encoding.Default.GetString(buffer);
-
-            var balances = JsonConvert.DeserializeObject<Root>(stringJson.ToString());
+            var balances = JsonConvert.DeserializeObject<Root>(stringJson);
 
             return balances.Balances;
         }

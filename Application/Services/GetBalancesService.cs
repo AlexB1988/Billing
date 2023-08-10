@@ -1,59 +1,60 @@
-﻿using Billing.Application.Interfaces;
+﻿using Billing.Application.DTOs;
+using Billing.Application.Interfaces;
 using Billing.Application.ViewModels;
-using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Billing.Application.Services
 {
     public class GetBalancesService : IGetBalancesService
     {
-        private IPayment _payment { get; set; }
 
-        private IBalance _balance { get; set; }
+        private readonly IBalancesPerMonth _balancesPerMonth; 
 
-        public GetBalancesService(IPayment payment, IBalance balance) 
-            => (_payment, _balance) = (payment, balance);
+        public GetBalancesService(IBalancesPerMonth balancesPerMonth) 
+            => _balancesPerMonth = balancesPerMonth;
 
         public async Task<List<GetBalancesViewModel>> GetBalances(int accountId, Period period)
         {
-            var balancesTemp = await _balance.GetBalances();
-            var payments = await _payment.GetPayments();
-
-            var balances = balancesTemp
-                .Where(account => account.AccountId == accountId)
-                .OrderBy(period => period.Period).OrderBy(period => period.Period);
-
-            var result = balances.GroupJoin(
-                inner: payments,
-                outerKeySelector: balance => balance.AccountId,
-                innerKeySelector: payment => payment.AccountId,
-                resultSelector: (b, p) => new GetBalancesViewModel
-                {
-                    Period = b.Period.ToString("yyyyMM"),
-                    AccountId = b.AccountId,
-                    InBalance = b.InBalance,
-                    Calculate = b.Calculation,
-                    Pay = p.Where(p => p.Date.Year == b.Period.Year
-                                && p.Date.Month == b.Period.Month)
-                           .Sum(pay => pay.Sum)
-                }).ToList();
-
-            for (int i = 0; i < result.Count(); i++)
-            {
-                if (i != 0)
-                {
-                    result[i].InBalance = result[i - 1].OutBalance;
-                }
-                result[i].OutBalance = result[i].InBalance + result[i].Calculate - result[i].Pay;
-            }
-
+            var result =await _balancesPerMonth.GetBalancesPerMonth(accountId);
 
             switch (period)
             {
                 case Period.Month:
-                    return result.OrderByDescending(period => period.Period).ToList();
+                    return result.OrderByDescending(x => x.Period)
+                        .Select(x => new GetBalancesViewModel
+                        {
+                            AccountId = x.AccountId,
+                            Period = x.Period.ToString("yyyyMM"),
+                            InBalance = x.InBalance,
+                            Calculate = x.Calculate,
+                            Pay = x.Pay,
+                            OutBalance = x.OutBalance
+                        }).ToList();
 
+                //case Period.Quater:
+                //    return result.GroupBy(x => new { Year = x.Period.Year, Quater = x.Period.Month % 4 + 1 })
+                //        .Select((x) => new GetBalancesViewModel
+                //        {
+                //            AccountId = accountId,
+                //            Period = x.Key.Year.ToString() +" "+ x.Key.Quater.ToString(),
+                //            InBalance = x.OrderBy(y => y.Period.Month).FirstOrDefault().InBalance,
+                //            Calculate = x.Sum(y => y.Calculate),
+                //            Pay = x.Sum(y => y.Pay),
+                //            OutBalance = x.OrderBy(y => y.Period.Month).LastOrDefault().OutBalance
+                //        }).OrderByDescending(x => x.Period).ToList();     
+                    
                 case Period.Year:
-
+                    return result.OrderByDescending(x => x.Period)
+                        .GroupBy(x => new { Year = x.Period.Year })
+                        .Select((x) => new GetBalancesViewModel
+                        {
+                            AccountId = accountId,
+                            Period = x.Key.ToString(),
+                            InBalance = x.OrderBy(y => y.Period.Month).FirstOrDefault().InBalance,
+                            Calculate = x.Sum(y => y.Calculate),
+                            Pay = x.Sum(y => y.Pay),
+                            OutBalance = x.OrderBy(y => y.Period.Month).LastOrDefault().OutBalance
+                        }).ToList();
                 default:
                     throw new Exception();
             }

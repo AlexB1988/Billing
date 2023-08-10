@@ -4,6 +4,6 @@ namespace Billing.Application.Interfaces
 {
     public interface IBalance
     {
-        public Task<List<Balance>> GetBalances();
+        public Task<ICollection<Balance>> GetBalances();
     }
 }

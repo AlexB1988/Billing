@@ -4,6 +4,6 @@ namespace Billing.Application.Interfaces
 {
     public interface IPayment
     {
-        public Task<List<Payment>> GetPayments();
+        public Task<ICollection<Payment>> GetPayments();
     }
 }

@@ -7,15 +7,11 @@ namespace Billing.Infrastructure
 {
     public class PaymentFromFile : IPayment
     {
-        public async Task<List<Payment>> GetPayments()
+        public async Task<ICollection<Payment>> GetPayments()
         {
-            using var file = new FileStream(@"Infrastructure\payment_202105270827.json", FileMode.Open);
+            using var file = File.OpenText(@"Infrastructure\payment_202105270827.json");
 
-            byte[] buffer = new byte[file.Length];
-
-            await file.ReadAsync(buffer, 0, buffer.Length);
-
-            string stringJson = Encoding.Default.GetString(buffer);
+            var stringJson = await file.ReadToEndAsync();
 
             var payments = JsonConvert.DeserializeObject<List<Payment>>(stringJson.ToString());
 

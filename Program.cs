@@ -1,4 +1,5 @@
 using Billing.Application.Interfaces;
+using Billing.Application.Repositories;
 using Billing.Application.Services;
 using Billing.Infrastructure;
 
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IBalance, BalanceFormFile>();
 builder.Services.AddScoped<IPayment, PaymentFromFile>();
 builder.Services.AddScoped<IGetBalancesService, GetBalancesService>();
+builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
+builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonth>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
