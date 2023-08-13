@@ -1,3 +1,4 @@
+using Billing.Application.Formatters;
 using Billing.Application.Interfaces;
 using Billing.Application.Repositories;
 using Billing.Application.Services;
@@ -11,7 +12,13 @@ builder.Services.AddScoped<IGetBalancesService, GetBalancesService>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonth>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.RespectBrowserAcceptHeader = true;
+    options.ReturnHttpNotAcceptable = true;
+}).AddXmlSerializerFormatters()
+  .AddMvcOptions(options => options.OutputFormatters.Add(new CsvOutputFormatter()));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -6,11 +6,11 @@ namespace Billing.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class Balances : ControllerBase
+    public class BalancesController : ControllerBase
     {
         private readonly IGetBalancesService _getBalancesService;
-
-        public Balances(IGetBalancesService getBalancesService) =>  _getBalancesService = getBalancesService;
+        
+        public BalancesController(IGetBalancesService getBalancesService) =>  _getBalancesService = getBalancesService;
 
 
         [HttpGet("GetBalances/{accountId}/{period}")]
