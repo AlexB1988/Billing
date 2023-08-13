@@ -31,18 +31,18 @@ namespace Billing.Application.Services
                             OutBalance = x.OutBalance
                         }).ToList();
 
-                //case Period.Quater:
-                //    return result.GroupBy(x => new { Year = x.Period.Year, Quater = x.Period.Month % 4 + 1 })
-                //        .Select((x) => new GetBalancesViewModel
-                //        {
-                //            AccountId = accountId,
-                //            Period = x.Key.Year.ToString() +" "+ x.Key.Quater.ToString(),
-                //            InBalance = x.OrderBy(y => y.Period.Month).FirstOrDefault().InBalance,
-                //            Calculate = x.Sum(y => y.Calculate),
-                //            Pay = x.Sum(y => y.Pay),
-                //            OutBalance = x.OrderBy(y => y.Period.Month).LastOrDefault().OutBalance
-                //        }).OrderByDescending(x => x.Period).ToList();     
-                    
+                case Period.Quater:
+                    return result.GroupBy(x => new { Year = x.Period.Year, Quater = (x.Period.Month - 1) / 3 + 1 })
+                        .Select((x) => new GetBalancesViewModel
+                        {
+                            AccountId = accountId,
+                            Period = x.Key.Year.ToString() + " " + x.Key.Quater.ToString(),
+                            InBalance = x.FirstOrDefault().InBalance,
+                            Calculate = x.Sum(y => y.Calculate),
+                            Pay = x.Sum(y => y.Pay),
+                            OutBalance = x.LastOrDefault().OutBalance
+                        }).OrderByDescending(x => x.Period).ToList();
+
                 case Period.Year:
                     return result.OrderByDescending(x => x.Period)
                         .GroupBy(x => new { Year = x.Period.Year })
