@@ -20,8 +20,7 @@ namespace Billing.Application.Services
             switch (period)
             {
                 case Period.Month:
-                    return result.OrderByDescending(x => x.Period)
-                        .Select(x => new GetBalancesViewModel
+                    return result.Select(x => new GetBalancesViewModel
                         {
                             AccountId = x.AccountId,
                             Period = x.Period.ToString("yyyyMM"),
@@ -29,7 +28,7 @@ namespace Billing.Application.Services
                             Calculate = x.Calculate,
                             Pay = x.Pay,
                             OutBalance = x.OutBalance
-                        }).ToList();
+                        }).OrderByDescending(x => x.Period).ToList();
 
                 case Period.Quater:
                     return result.GroupBy(x => new { Year = x.Period.Year, Quater = (x.Period.Month - 1) / 3 + 1 })
@@ -44,17 +43,16 @@ namespace Billing.Application.Services
                         }).OrderByDescending(x => x.Period).ToList();
 
                 case Period.Year:
-                    return result.OrderByDescending(x => x.Period)
-                        .GroupBy(x => new { Year = x.Period.Year })
+                    return result.GroupBy(x => new { Year = x.Period.Year })
                         .Select((x) => new GetBalancesViewModel
                         {
                             AccountId = accountId,
                             Period = x.Key.ToString(),
-                            InBalance = x.OrderBy(y => y.Period.Month).FirstOrDefault().InBalance,
+                            InBalance = x.FirstOrDefault().InBalance,
                             Calculate = x.Sum(y => y.Calculate),
                             Pay = x.Sum(y => y.Pay),
-                            OutBalance = x.OrderBy(y => y.Period.Month).LastOrDefault().OutBalance
-                        }).ToList();
+                            OutBalance = x.LastOrDefault().OutBalance
+                        }).OrderByDescending(x => x.Period).ToList();
                 default:
                     throw new Exception();
             }
