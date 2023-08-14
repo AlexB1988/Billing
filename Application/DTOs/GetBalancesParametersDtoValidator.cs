@@ -6,7 +6,7 @@ namespace Billing.Application.DTOs
     {
         public GetBalancesParametersDtoValidator()
         {
-            RuleFor(x => x.AccountId).NotNull().NotEmpty().WithMessage("Поле {PropertyName} не может быть пустым");
+            RuleFor(x => x.AccountId).NotNull().WithMessage("Поле {PropertyName} не может быть пустым");
         }
     }
 }
