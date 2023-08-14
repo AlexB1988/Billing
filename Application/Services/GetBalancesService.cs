@@ -13,11 +13,11 @@ namespace Billing.Application.Services
         public GetBalancesService(IBalancesPerMonth balancesPerMonth) 
             => _balancesPerMonth = balancesPerMonth;
 
-        public async Task<List<GetBalancesViewModel>> GetBalances(int accountId, Period period)
+        public async Task<List<GetBalancesViewModel>> GetBalances(GetBalancesParametersDto parametersDto)
         {
-            var result =await _balancesPerMonth.GetBalancesPerMonth(accountId);
+            var result =await _balancesPerMonth.GetBalancesPerMonth(parametersDto.AccountId);
 
-            switch (period)
+            switch (parametersDto.Period)
             {
                 case Period.Month:
                     return result.Select(x => new GetBalancesViewModel
@@ -34,7 +34,7 @@ namespace Billing.Application.Services
                     return result.GroupBy(x => new { Year = x.Period.Year, Quater = (x.Period.Month - 1) / 3 + 1 })
                         .Select((x) => new GetBalancesViewModel
                         {
-                            AccountId = accountId,
+                            AccountId = parametersDto.AccountId,
                             Period = x.Key.Year.ToString() + " " + x.Key.Quater.ToString(),
                             InBalance = x.FirstOrDefault().InBalance,
                             Calculate = x.Sum(y => y.Calculate),
@@ -46,8 +46,8 @@ namespace Billing.Application.Services
                     return result.GroupBy(x => new { Year = x.Period.Year })
                         .Select((x) => new GetBalancesViewModel
                         {
-                            AccountId = accountId,
-                            Period = x.Key.ToString(),
+                            AccountId = parametersDto.AccountId,
+                            Period = x.Key.Year.ToString(),
                             InBalance = x.FirstOrDefault().InBalance,
                             Calculate = x.Sum(y => y.Calculate),
                             Pay = x.Sum(y => y.Pay),

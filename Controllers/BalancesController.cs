@@ -1,4 +1,5 @@
-﻿using Billing.Application.Interfaces;
+﻿using Billing.Application.DTOs;
+using Billing.Application.Interfaces;
 using Billing.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +14,10 @@ namespace Billing.Controllers
         public BalancesController(IGetBalancesService getBalancesService) =>  _getBalancesService = getBalancesService;
 
 
-        [HttpGet("GetBalances/{accountId}/{period}")]
-        public async Task<IActionResult> GetBalances(int accountId, Period period)
+        [HttpGet("GetBalances")]
+        public async Task<IActionResult> GetBalances([FromQuery] GetBalancesParametersDto parametersDto)
         {
-            var result = await _getBalancesService.GetBalances(accountId, period);
+            var result = await _getBalancesService.GetBalances(parametersDto);
 
             return Ok(result);
         }

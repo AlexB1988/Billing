@@ -1,8 +1,10 @@
+using Billing.Application.DTOs;
 using Billing.Application.Formatters;
 using Billing.Application.Interfaces;
 using Billing.Application.Repositories;
 using Billing.Application.Services;
 using Billing.Infrastructure;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddScoped<IPayment, PaymentFromFile>();
 builder.Services.AddScoped<IGetBalancesService, GetBalancesService>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonth>();
+builder.Services.AddScoped<IValidator<GetBalancesParametersDto>, GetBalancesParametersDtoValidator>();
 
 builder.Services.AddControllers(options =>
 {
