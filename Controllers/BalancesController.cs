@@ -10,8 +10,10 @@ namespace Billing.Controllers
     public class BalancesController : ControllerBase
     {
         private readonly IGetBalancesService _getBalancesService;
-        
-        public BalancesController(IGetBalancesService getBalancesService) =>  _getBalancesService = getBalancesService;
+        private readonly IGetDebtService _getDebtService;
+
+        public BalancesController(IGetBalancesService getBalancesService, IGetDebtService getDebtService) 
+            => (_getBalancesService, _getDebtService) = (getBalancesService, getDebtService);
 
 
         [HttpGet("GetBalances")]
@@ -19,6 +21,13 @@ namespace Billing.Controllers
         {
             var result = await _getBalancesService.GetBalances(parametersDto);
 
+            return Ok(result);
+        }
+
+        [HttpGet("GetDebt/{accountId}")]
+        public async Task<IActionResult> GetDebt(int accountId)
+        {
+            var result = await _getDebtService.GetDebt(accountId);
             return Ok(result);
         }
     }
