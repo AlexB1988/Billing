@@ -11,7 +11,7 @@ builder.Services.AddScoped<IBalance, BalanceFormFile>();
 builder.Services.AddScoped<IPayment, PaymentFromFile>();
 builder.Services.AddScoped<IGetBalancesService, GetBalancesService>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
-builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonth>();
+builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonthService>();
 builder.Services.AddScoped<IGetDebtService, GetDebtService>();
 
 builder.Services.AddControllers(options =>

@@ -13,7 +13,12 @@ namespace Billing.Application.Services
         {
             var balances = await _balancesPerMonth.GetBalancesPerMonth(accountId);
 
-            return balances.LastOrDefault().OutBalance;
+            if (balances.Count > 0)
+            {
+                return balances.LastOrDefault().OutBalance;
+            }
+
+            return 0;
         }
     }
 }

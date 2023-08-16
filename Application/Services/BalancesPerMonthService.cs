@@ -6,13 +6,13 @@ using Billing.Domain.Entities;
 
 namespace Billing.Application.Services
 {
-    public class BalancesPerMonth : IBalancesPerMonth
+    public class BalancesPerMonthService : IBalancesPerMonth
     {
         private readonly IBalanceRepository _balanceRepository;
 
         private readonly IPayment _payment;
 
-        public BalancesPerMonth(IBalanceRepository balanceRepository, IPayment payment) 
+        public BalancesPerMonthService(IBalanceRepository balanceRepository, IPayment payment) 
             => (_balanceRepository, _payment) = (balanceRepository, payment);
 
 
