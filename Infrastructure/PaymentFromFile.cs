@@ -13,7 +13,7 @@ namespace Billing.Infrastructure
 
             var stringJson = await file.ReadToEndAsync();
 
-            var payments = JsonConvert.DeserializeObject<List<Payment>>(stringJson.ToString());
+            var payments = JsonConvert.DeserializeObject<ICollection<Payment>>(stringJson.ToString());
 
             return payments;
         }

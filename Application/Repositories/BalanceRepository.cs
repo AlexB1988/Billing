@@ -5,7 +5,7 @@ namespace Billing.Application.Repositories
 {
     public class BalanceRepository : IBalanceRepository
     {
-        private IBalance _balance { get; set; }
+        private readonly IBalance _balance;
 
         public BalanceRepository(IBalance balance) => _balance = balance;
 

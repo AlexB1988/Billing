@@ -1,6 +1,5 @@
-﻿using Billing.Application.DTOs;
+﻿using Billing.Application.Enums;
 using Billing.Application.Interfaces;
-using Billing.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billing.Controllers
@@ -9,17 +8,17 @@ namespace Billing.Controllers
     [Route("api/[controller]")]
     public class BalancesController : ControllerBase
     {
-        private readonly IGetBalancesService _getBalancesService;
-        private readonly IGetDebtService _getDebtService;
+        private readonly IBalancesService _getBalancesService;
+        private readonly IDebtService _getDebtService;
 
-        public BalancesController(IGetBalancesService getBalancesService, IGetDebtService getDebtService) 
+        public BalancesController(IBalancesService getBalancesService, IDebtService getDebtService) 
             => (_getBalancesService, _getDebtService) = (getBalancesService, getDebtService);
 
 
-        [HttpGet("GetBalances")]
-        public async Task<IActionResult> GetBalances([FromQuery] GetBalancesParametersDto parametersDto)
+        [HttpGet("GetBalances/{accountId}/{period}")]
+        public async Task<IActionResult> GetBalances(int accountId, Period period)
         {
-            var result = await _getBalancesService.GetBalances(parametersDto);
+            var result = await _getBalancesService.GetBalances(accountId,period);
 
             return Ok(result);
         }

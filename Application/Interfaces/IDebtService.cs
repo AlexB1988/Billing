@@ -1,6 +1,6 @@
 ﻿namespace Billing.Application.Interfaces
 {
-    public interface IGetDebtService
+    public interface IDebtService
     {
         public Task<decimal> GetDebt(int accountId);
     }

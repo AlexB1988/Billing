@@ -1,28 +1,27 @@
-﻿using Billing.Application.DTOs;
+﻿using Billing.Application.Enums;
 using Billing.Application.Interfaces;
 using Billing.Application.ViewModels;
-using System.Runtime.CompilerServices;
 
 namespace Billing.Application.Services
 {
-    public class GetBalancesService : IGetBalancesService
+    public class BalancesService : IBalancesService
     {
 
         private readonly IBalancesPerMonth _balancesPerMonth; 
 
-        public GetBalancesService(IBalancesPerMonth balancesPerMonth) 
+        public BalancesService(IBalancesPerMonth balancesPerMonth) 
             => _balancesPerMonth = balancesPerMonth;
 
-        public async Task<List<GetBalancesViewModel>> GetBalances(GetBalancesParametersDto parametersDto)
+        public async Task<ICollection<GetBalancesViewModel>> GetBalances(int accountId, Period period)
         {
-            var result =await _balancesPerMonth.GetBalancesPerMonth(parametersDto.AccountId);
+            var result =await _balancesPerMonth.GetBalancesPerMonth(accountId);
 
-            switch (parametersDto.Period)
+            switch (period)
             {
                 case Period.Month:
                     return result.Select(x => new GetBalancesViewModel
                         {
-                            AccountId = x.AccountId,
+                            AccountId = accountId,
                             Period = x.Period.ToString("yyyyMM"),
                             InBalance = x.InBalance,
                             Calculate = x.Calculate,
@@ -34,7 +33,7 @@ namespace Billing.Application.Services
                     return result.GroupBy(x => new { Year = x.Period.Year, Quater = (x.Period.Month - 1) / 3 + 1 })
                         .Select((x) => new GetBalancesViewModel
                         {
-                            AccountId = parametersDto.AccountId,
+                            AccountId = accountId,
                             Period = x.Key.Year.ToString() + " " + x.Key.Quater.ToString(),
                             InBalance = x.FirstOrDefault().InBalance,
                             Calculate = x.Sum(y => y.Calculate),
@@ -46,7 +45,7 @@ namespace Billing.Application.Services
                     return result.GroupBy(x => new { Year = x.Period.Year })
                         .Select((x) => new GetBalancesViewModel
                         {
-                            AccountId = parametersDto.AccountId,
+                            AccountId = accountId,
                             Period = x.Key.Year.ToString(),
                             InBalance = x.FirstOrDefault().InBalance,
                             Calculate = x.Sum(y => y.Calculate),
@@ -57,12 +56,5 @@ namespace Billing.Application.Services
                     throw new Exception();
             }
         } 
-    }
-
-    public enum Period
-    {
-        Month,
-        Quater,
-        Year
     }
 }

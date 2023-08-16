@@ -1,18 +1,19 @@
-using Billing.Application.DTOs;
 using Billing.Application.Formatters;
 using Billing.Application.Interfaces;
 using Billing.Application.Repositories;
 using Billing.Application.Services;
 using Billing.Infrastructure;
+using Billing.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IBalance, BalanceFormFile>();
 builder.Services.AddScoped<IPayment, PaymentFromFile>();
-builder.Services.AddScoped<IGetBalancesService, GetBalancesService>();
+builder.Services.AddScoped<IBalancesService, BalancesService>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonthService>();
-builder.Services.AddScoped<IGetDebtService, GetDebtService>();
+builder.Services.AddScoped<IDebtService, DebtService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 builder.Services.AddControllers(options =>
 {
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCustomExceptionHandler();
 
 app.UseHttpsRedirection();
 
