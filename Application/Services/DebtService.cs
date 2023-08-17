@@ -16,8 +16,19 @@ namespace Billing.Application.Services
 
             if (balances.Count == 0)
             {
-                throw new NotFoundException($"Данных по этому лицевому нет");
+                throw new NotFoundException($"Данных по этому лицевому счету нет");
             }
+
+            var currentDate = DateTime.UtcNow;
+
+            var lastYearBilling = balances.LastOrDefault().Period.Year;
+
+            var lastMonthBilling = balances.LastOrDefault().Period.Month;
+
+            if (lastYearBilling == currentDate.Year && lastMonthBilling == currentDate.Month)
+            {
+                return balances.LastOrDefault().InBalance - balances.LastOrDefault().Pay;
+            };
 
             return balances.LastOrDefault().OutBalance;
         }
