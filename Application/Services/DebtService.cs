@@ -21,13 +21,14 @@ namespace Billing.Application.Services
 
             var currentDate = DateTime.UtcNow;
 
+
             var lastYearBilling = balances.LastOrDefault().Period.Year;
 
             var lastMonthBilling = balances.LastOrDefault().Period.Month;
 
             if (lastYearBilling == currentDate.Year && lastMonthBilling == currentDate.Month)
             {
-                return balances.LastOrDefault().InBalance - balances.LastOrDefault().Pay;
+                return balances.Select(x => x.InBalance - x.Pay).LastOrDefault();
             };
 
             return balances.LastOrDefault().OutBalance;
