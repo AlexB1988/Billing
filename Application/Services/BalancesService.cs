@@ -20,14 +20,14 @@ namespace Billing.Application.Services
             return period switch
             {
                 Period.Month => result.Select(x => new GetBalancesViewModel
-                {
-                    AccountId = accountId,
-                    Period = x.Period.ToString("yyyyMM"),
-                    InBalance = x.InBalance,
-                    Calculate = x.Calculate,
-                    Pay = x.Pay,
-                    OutBalance = x.OutBalance
-                }).OrderByDescending(x => x.Period).ToList(),
+                                    {
+                                        AccountId = accountId,
+                                        Period = x.Period.ToString("yyyyMM"),
+                                        InBalance = x.InBalance,
+                                        Calculate = x.Calculate,
+                                        Pay = x.Pay,
+                                        OutBalance = x.OutBalance
+                                    }).OrderByDescending(x => x.Period).ToList(),
 
                 Period.Quater => result.GroupBy(x => new { Year = x.Period.Year, Quater = (x.Period.Month - 1) / 3 + 1 })
                                     .Select((x) => new GetBalancesViewModel
