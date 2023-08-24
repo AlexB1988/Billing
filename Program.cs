@@ -1,14 +1,14 @@
 using Billing.Application.Formatters;
 using Billing.Application.Interfaces;
-using Billing.Application.Repositories;
 using Billing.Application.Services;
 using Billing.Infrastructure;
+using Billing.Infrastructure.Repository;
 using Billing.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IBalance, BalanceFormFile>();
-builder.Services.AddScoped<IPayment, PaymentFromFile>();
+builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IBalancesService, BalancesService>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IBalancesPerMonth, BalancesPerMonthService>();

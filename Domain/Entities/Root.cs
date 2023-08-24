@@ -5,6 +5,6 @@ namespace Billing.Domain.Entities
     public class Root
     {
         [JsonProperty("balance")]
-        public List<Balance> Balances { get; set; }
+        public ICollection<Balance> Balances { get; set; }
     }
 }

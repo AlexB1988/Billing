@@ -1,18 +1,19 @@
 ﻿using Billing.Application.DTOs;
 using Billing.Application.Interfaces;
+using Billing.Domain.Entities;
+using Newtonsoft.Json;
 
-namespace Billing.Application.Repositories
+namespace Billing.Infrastructure.Repository
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly IPayment _payment;
-
-        public PaymentRepository(IPayment payment) =>
-            _payment = payment;
-
         public async Task<ICollection<PaymentDto>> GetPayments()
         {
-            var payments = await _payment.GetPayments();
+            using var file = File.OpenText(@"Infrastructure\payment_202105270827.json");
+
+            var stringJson = await file.ReadToEndAsync();
+
+            var payments = JsonConvert.DeserializeObject<ICollection<Payment>>(stringJson.ToString());
 
             var paymentsDto = payments.Select(x => new PaymentDto
             {
@@ -21,6 +22,7 @@ namespace Billing.Application.Repositories
                 Sum = x.Sum,
                 Date = x.Date
             }).ToList();
+
 
             return paymentsDto;
         }

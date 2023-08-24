@@ -21,7 +21,7 @@ namespace Billing.Application.Services
             var balance = await _balanceRepository.GetBalances();
             var payment = await _paymentRepository.GetPayments();
 
-            var result = balance.Where(x => x.AccountId == accountId).GroupJoin(
+            var result = balance.OrderBy(x => x.Period).Where(x => x.AccountId == accountId).GroupJoin(
                                 inner: payment,
                                 outerKeySelector: balance => balance.AccountId,
                                 innerKeySelector: payment => payment.AccountId,
