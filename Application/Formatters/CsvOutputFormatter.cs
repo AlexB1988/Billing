@@ -15,30 +15,30 @@ namespace Billing.Application.Formatters
         }
 
         protected override bool CanWriteType(Type? type)
-            => typeof(GetBalancesViewModel).IsAssignableFrom(type)
-                || typeof(ICollection<GetBalancesViewModel>).IsAssignableFrom(type);
+            => typeof(BalancesViewModel).IsAssignableFrom(type)
+                || typeof(ICollection<BalancesViewModel>).IsAssignableFrom(type);
 
         public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
             var responce = context.HttpContext.Response;
             var buffer = new StringBuilder();
 
-            if (context.Object is ICollection<GetBalancesViewModel>)
+            if (context.Object is ICollection<BalancesViewModel>)
             {
-                foreach (var Balance in (ICollection<GetBalancesViewModel>)context.Object)
+                foreach (var Balance in (ICollection<BalancesViewModel>)context.Object)
                 {
                     FormatCsv(buffer, Balance);
                 }
             }
             else
             {
-                FormatCsv(buffer, (GetBalancesViewModel)context.Object);
+                FormatCsv(buffer, (BalancesViewModel)context.Object);
             }
 
             await responce.WriteAsync(buffer.ToString(), selectedEncoding);
         }
 
-        private static void FormatCsv(StringBuilder buffer, GetBalancesViewModel balance)
+        private static void FormatCsv(StringBuilder buffer, BalancesViewModel balance)
         {
             buffer.Append($"{balance.Period};{balance.AccountId};{balance.InBalance};{balance.Calculate};{balance.Pay};{balance.OutBalance}\n");
         }

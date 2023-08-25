@@ -5,6 +5,6 @@ namespace Billing.Application.Interfaces
 {
     public interface IBalancesService
     {
-        public Task<ICollection<GetBalancesViewModel>> GetBalances(int accountId, Period period);
+        public Task<ICollection<BalancesViewModel>> GetBalances(int accountId, Period period);
     }
 }

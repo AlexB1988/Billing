@@ -1,6 +1,6 @@
 ﻿namespace Billing.Application.ViewModels
 {
-    public class GetBalancesViewModel
+    public class BalancesViewModel
     {
         public string Period { get; set; }
 
