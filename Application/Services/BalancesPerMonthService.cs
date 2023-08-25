@@ -16,7 +16,7 @@ namespace Billing.Application.Services
             => (_balanceRepository, _paymentRepository) = (balanceRepository, paymentRepository);
 
 
-        public async Task<ICollection<BalancesPerMonthDto>> GetBalancesPerMonth(int accountId)
+        public async Task<ICollection<BalancesPerMonthModel>> GetBalancesPerMonth(int accountId)
         {
             var balance = await _balanceRepository.GetBalances();
             var payment = await _paymentRepository.GetPayments();
@@ -25,7 +25,7 @@ namespace Billing.Application.Services
                                 inner: payment,
                                 outerKeySelector: balance => balance.AccountId,
                                 innerKeySelector: payment => payment.AccountId,
-                                resultSelector: (b, p) => new BalancesPerMonthDto
+                                resultSelector: (b, p) => new BalancesPerMonthModel
                                 {
                                     Period = b.Period,
                                     AccountId = b.AccountId,

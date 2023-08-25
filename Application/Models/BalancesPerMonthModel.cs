@@ -1,6 +1,6 @@
 ﻿namespace Billing.Application.DTOs
 {
-    public class BalancesPerMonthDto
+    public class BalancesPerMonthModel
     {
         public DateTime Period { get; set; }
 

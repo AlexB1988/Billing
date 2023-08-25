@@ -1,9 +1,9 @@
-﻿using Billing.Application.DTOs;
+﻿using Billing.Domain.Entities;
 
 namespace Billing.Application.Interfaces
 {
     public interface IBalanceRepository
     {
-        public Task<ICollection<BalanceDto>> GetBalances();
+        public Task<ICollection<Balance>> GetBalances();
     }
 }

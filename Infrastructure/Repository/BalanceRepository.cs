@@ -8,7 +8,7 @@ namespace Billing.Infrastructure
 {
     public class BalanceRepository : IBalanceRepository
     {
-        public async Task<ICollection<BalanceDto>> GetBalances()
+        public async Task<ICollection<Balance>> GetBalances()
         {
             using var file = File.OpenText(@"Infrastructure\balance_202105270825.json");
 
@@ -16,7 +16,7 @@ namespace Billing.Infrastructure
 
             var balances = JsonConvert.DeserializeObject<Root>(stringJson);
 
-            var balancesDto = balances.Balances.Select(x => new BalanceDto
+            var balancesDto = balances.Balances.Select(x => new Balance
             {
                 AccountId = x.AccountId,
                 Period = DateTime.ParseExact(x.Period, "yyyyMM", null),

@@ -7,15 +7,15 @@ namespace Billing.Infrastructure.Repository
 {
     public class PaymentRepository : IPaymentRepository
     {
-        public async Task<ICollection<PaymentDto>> GetPayments()
+        public async Task<ICollection<Payment>> GetPayments()
         {
             using var file = File.OpenText(@"Infrastructure\payment_202105270827.json");
 
             var stringJson = await file.ReadToEndAsync();
 
-            var payments = JsonConvert.DeserializeObject<ICollection<Payment>>(stringJson.ToString());
+            var payments = JsonConvert.DeserializeObject<ICollection<PaymentDto>>(stringJson.ToString());
 
-            var paymentsDto = payments.Select(x => new PaymentDto
+            var paymentsDto = payments.Select(x => new Payment
             {
                 Guid = x.Guid,
                 AccountId = x.AccountId,

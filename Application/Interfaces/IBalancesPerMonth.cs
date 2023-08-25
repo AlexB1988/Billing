@@ -4,6 +4,6 @@ namespace Billing.Application.Interfaces
 {
     public interface IBalancesPerMonth
     {
-        public Task<ICollection<BalancesPerMonthDto>> GetBalancesPerMonth(int accountId);
+        public Task<ICollection<BalancesPerMonthModel>> GetBalancesPerMonth(int accountId);
     }
 }

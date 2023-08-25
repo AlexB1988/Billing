@@ -28,12 +28,14 @@ namespace Billing.Middleware
         {
             var code = HttpStatusCode.InternalServerError;
             var result = string.Empty;
+
             switch (ex)
             {
                 case NotFoundException:
                     code = HttpStatusCode.NotFound;
                     break;
             }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 
